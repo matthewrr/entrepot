@@ -1,0 +1,7 @@
+{
+    "files.exclude": {
+        "**/.gitignore": true,
+        "**/.python-version": true,
+        "**/migrations": true
+    }
+}
