@@ -1,7 +1,10 @@
 {
     "files.exclude": {
+        "**/__pycache__": true,
         "**/.gitignore": true,
         "**/.python-version": true,
+        "**/.vscode": true,
+        "**/db.sqlite3": true,
         "**/migrations": true
     }
 }
