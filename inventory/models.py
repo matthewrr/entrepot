@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from taggit.managers import TaggableManager
 
 class Building(models.Model):
     name = models.CharField(max_length=100)
@@ -54,7 +55,7 @@ class Container(models.Model):
     material = models.CharField(max_length=100, blank=True)
     user_img = models.ImageField(upload_to = "images/", blank=True, null=True)
     default_img =models.ImageField(upload_to = "images/", blank=True, null=True)
-    # tags = import django-taggic
+    tags = TaggableManager()
     notes = models.TextField(blank=True)
     created_date = models.DateTimeField(default=timezone.now)
     has_qr_code = models.BooleanField(default=False) #rename
@@ -69,7 +70,7 @@ class Item(models.Model):
     description = models.TextField(blank=True) #set length (of all text fields)
     img = models.ImageField(upload_to = "images/", blank=True, null=True) #write as plural?
     high_value = models.BooleanField(default=False)
-    # tags = import django-taggit
+    tags = TaggableManager()
     category = models.CharField(max_length=100, blank=True) #should these be own class? multiselect
     subcategory = models.CharField(max_length=100, blank=True) #should these be own class? multiselect, cascading
     created_date = models.DateTimeField(default=timezone.now)
