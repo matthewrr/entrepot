@@ -4,6 +4,7 @@ from taggit.managers import TaggableManager
 
 class Building(models.Model):
     name = models.CharField(max_length=100)
+    default = models.BooleanField(default=False)
     #only populate address fields if requested by user
     address_1 = models.CharField(verbose_name='Street Address 1', max_length=100, blank=True)
     address_2 = models.CharField(verbose_name='Street Address 2', max_length=100, blank=True)
@@ -16,7 +17,8 @@ class Building(models.Model):
         return self.name
 
 class Room(models.Model):
-    name = models.CharField(max_length=100) 
+    name = models.CharField(max_length=100)
+    default = models.BooleanField(default=False)
     floor = models.CharField(max_length=100, blank=True)
     room_number = models.CharField(max_length=100, blank=True) #choose more ambiguous attribute name?
     blueprint = models.ImageField(upload_to = "images/", blank=True, null=True)
@@ -30,6 +32,7 @@ class Room(models.Model):
 
 class RoomSection(models.Model):
     name = models.CharField(max_length=100, blank=True) #e.g. A1
+    default = models.BooleanField(default=False)
     description = models.CharField(max_length=100, blank=True) #e.g. NE Wall
     map_color = models.CharField(max_length=6, blank=True) #use a color picker. optional and/or default options
     created_date = models.DateTimeField(default=timezone.now)
@@ -41,6 +44,7 @@ class RoomSection(models.Model):
 
 class Fixture(models.Model):
     category = models.CharField(max_length=100, blank=True) #allow previous entries as options, or popular choices
+    default = models.BooleanField(default=False)
     description = models.CharField(max_length=100, blank=True) #hints like metal, color
     created_date = models.DateTimeField(default=timezone.now)
     room_section = models.ForeignKey(RoomSection, on_delete=models.CASCADE)
