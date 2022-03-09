@@ -52,13 +52,23 @@ class Fixture(models.Model):
     def __str__(self):
         return self.category
 
-class Container(models.Model):
-    name = models.CharField(max_length=100, blank=True) #appears on label
+class ContainerAttributes(models.Model):
+    name = models.CharField(max_length=100, blank=True)
     color = models.CharField(max_length=100, blank=True)
     size = models.CharField(max_length=100, blank=True)
     material = models.CharField(max_length=100, blank=True)
+    default_img = models.ImageField(upload_to = "images/", blank=True, null=True)
     user_img = models.ImageField(upload_to = "images/", blank=True, null=True)
-    default_img =models.ImageField(upload_to = "images/", blank=True, null=True)
+
+    class Meta:
+        abstract = True
+    
+class ContainerTemplate(ContainerAttributes):
+    name = models.CharField(max_length=100, blank=True)
+    created_date = models.DateTimeField(default=timezone.now) #make so can't inherit
+
+class Container(ContainerAttributes):
+    name = models.CharField(max_length=100, blank=True) #appears on label
     tags = TaggableManager()
     notes = models.TextField(blank=True)
     created_date = models.DateTimeField(default=timezone.now)
@@ -67,6 +77,9 @@ class Container(models.Model):
 
     def __str__(self):
         return self.name
+
+    # def save_container(self):
+    #     pass
 
 class Item(models.Model):
     name = models.CharField(max_length=100)
