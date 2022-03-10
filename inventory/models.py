@@ -23,7 +23,7 @@ class Room(models.Model):
     room_number = models.CharField(max_length=100, blank=True) #choose more ambiguous attribute name?
     blueprint = models.ImageField(upload_to = "images/", blank=True, null=True)
     created_date = models.DateTimeField(default=timezone.now)
-    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         #only include if exists
@@ -47,7 +47,7 @@ class Fixture(models.Model):
     default = models.BooleanField(default=False)
     description = models.CharField(max_length=100, blank=True) #hints like metal, color
     created_date = models.DateTimeField(default=timezone.now)
-    room_section = models.ForeignKey(RoomSection, on_delete=models.CASCADE)
+    room_section = models.ForeignKey(RoomSection, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.category
@@ -69,11 +69,11 @@ class ContainerTemplate(ContainerAttributes):
 
 class Container(ContainerAttributes):
     name = models.CharField(max_length=100, blank=True) #appears on label
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
     notes = models.TextField(blank=True)
     created_date = models.DateTimeField(default=timezone.now)
     has_qr_code = models.BooleanField(default=False) #rename
-    fixture = models.ForeignKey(Fixture, on_delete=models.CASCADE)
+    fixture = models.ForeignKey(Fixture, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -87,13 +87,13 @@ class Item(models.Model):
     description = models.TextField(blank=True) #set length (of all text fields)
     img = models.ImageField(upload_to = "images/", blank=True, null=True) #write as plural?
     high_value = models.BooleanField(default=False)
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
     category = models.CharField(max_length=100, blank=True) #should these be own class? multiselect
     subcategory = models.CharField(max_length=100, blank=True) #should these be own class? multiselect, cascading
     created_date = models.DateTimeField(default=timezone.now)
     #option for quick-add as list? utilize django-taggit for this?
     has_container = models.BooleanField(default=True) #rename?
-    container = models.ForeignKey(Container, on_delete=models.CASCADE)
+    container = models.ForeignKey(Container, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -106,6 +106,7 @@ class QRCode(models.Model):
         on_delete=models.CASCADE,
         primary_key=True,
     )
+    #add option for container or item FK
 
 class HighValue(models.Model):
     upc = models.CharField(max_length=100, blank=True)
