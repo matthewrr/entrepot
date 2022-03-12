@@ -1,5 +1,8 @@
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from taggit.managers import TaggableManager
 
 class Building(models.Model):
@@ -28,7 +31,8 @@ class Room(models.Model):
     def __str__(self):
         #only include if exists
         #create different function for combinations (def pwd(self)...)
-        return f'{self.name}, Room Number: {self.room_number}, Floor: {self.floor}'
+        # return f'{self.name}, Room Number: {self.room_number}, Floor: {self.floor}'
+        return self.name
 
 class RoomSection(models.Model):
     name = models.CharField(max_length=100, blank=True) #e.g. A1
@@ -37,6 +41,7 @@ class RoomSection(models.Model):
     map_color = models.CharField(max_length=6, blank=True) #use a color picker. optional and/or default options
     created_date = models.DateTimeField(default=timezone.now)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    
     #way to overlay on map? ooh, see contents by shelf or section, etc.
 
     def __str__(self):
@@ -48,6 +53,17 @@ class Fixture(models.Model):
     description = models.CharField(max_length=100, blank=True) #hints like metal, color
     created_date = models.DateTimeField(default=timezone.now)
     room_section = models.ForeignKey(RoomSection, on_delete=models.CASCADE, blank=True, null=True)
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
+        limit_choices_to = 
+            models.Q(app_label='inventory', model='room') |
+            models.Q(app_label='inventory', model='building'),
+        blank=True,
+        null=True,
+    )
+    object_id = models.PositiveIntegerField(blank=True, null=True)
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     def __str__(self):
         return self.category
@@ -66,6 +82,9 @@ class ContainerAttributes(models.Model):
 class ContainerTemplate(ContainerAttributes):
     name = models.CharField(max_length=100, blank=True)
     created_date = models.DateTimeField(default=timezone.now) #make so can't inherit
+    
+    def __str__(self):
+        return self.name
 
 class Container(ContainerAttributes):
     name = models.CharField(max_length=100, blank=True) #appears on label
@@ -73,13 +92,24 @@ class Container(ContainerAttributes):
     notes = models.TextField(blank=True)
     created_date = models.DateTimeField(default=timezone.now)
     has_qr_code = models.BooleanField(default=False) #rename
-    fixture = models.ForeignKey(Fixture, on_delete=models.CASCADE, blank=True, null=True)
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
+        limit_choices_to = 
+            models.Q(app_label='inventory', model='fixture') |
+            models.Q(app_label='inventory', model='room') |
+            models.Q(app_label='inventory', model='building'),
+        blank=True,
+        null=True,
+    )
+    object_id = models.PositiveIntegerField(blank=True, null=True)
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     def __str__(self):
         return self.name
 
-    # def save_container(self):
-    #     pass
+    def saved_locations():
+        pass
 
 class Item(models.Model):
     name = models.CharField(max_length=100)
@@ -93,7 +123,20 @@ class Item(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     #option for quick-add as list? utilize django-taggit for this?
     has_container = models.BooleanField(default=True) #rename?
-    container = models.ForeignKey(Container, on_delete=models.CASCADE, blank=True, null=True)
+    # container = models.ForeignKey(Container, on_delete=models.CASCADE, blank=True, null=True)
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
+        limit_choices_to = 
+            models.Q(app_label='inventory', model='fixture') |
+            models.Q(app_label='inventory', model='room') |
+            models.Q(app_label='inventory', model='building') |
+            models.Q(app_label='inventory', model='container'),
+        blank=True,
+        null=True,
+    )
+    object_id = models.PositiveIntegerField(blank=True, null=True)
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     def __str__(self):
         return self.name
@@ -101,12 +144,17 @@ class Item(models.Model):
 class QRCode(models.Model):
     img = models.ImageField(upload_to = "images/", blank=True, null=True)
     created_date = models.DateTimeField(default=timezone.now)
-    container = models.OneToOneField(
-        Container,
+    content_type = models.ForeignKey(
+        ContentType,
         on_delete=models.CASCADE,
-        primary_key=True,
+        limit_choices_to = 
+            models.Q(app_label='inventory', model='container') |
+            models.Q(app_label='inventory', model='item'),
+        blank=True,
+        null=True,
     )
-    #add option for container or item FK
+    object_id = models.PositiveIntegerField(blank=True, null=True)
+    content_object = GenericForeignKey('content_type', 'object_id')
 
 class HighValue(models.Model):
     upc = models.CharField(max_length=100, blank=True)

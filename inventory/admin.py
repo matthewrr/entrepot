@@ -1,3 +1,11 @@
 from django.contrib import admin
+from .models import *
 
-# Register your models here.
+admin.site.register(Building)
+admin.site.register(Room)
+admin.site.register(RoomSection)
+admin.site.register(Fixture)
+admin.site.register(ContainerTemplate)
+admin.site.register(Container)
+admin.site.register(Item)
+admin.site.register(QRCode)
