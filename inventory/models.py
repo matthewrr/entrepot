@@ -1,7 +1,6 @@
 from django.db import models
-from django.db.models import Q
 from django.utils import timezone
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from taggit.managers import TaggableManager
 
@@ -29,7 +28,6 @@ class Room(models.Model):
     building = models.ForeignKey(Building, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
-        #only include if exists
         #create different function for combinations (def pwd(self)...)
         # return f'{self.name}, Room Number: {self.room_number}, Floor: {self.floor}'
         return self.name
@@ -41,7 +39,6 @@ class RoomSection(models.Model):
     map_color = models.CharField(max_length=6, blank=True) #use a color picker. optional and/or default options
     created_date = models.DateTimeField(default=timezone.now)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    
     #way to overlay on map? ooh, see contents by shelf or section, etc.
 
     def __str__(self):
@@ -81,7 +78,7 @@ class ContainerAttributes(models.Model):
     
 class ContainerTemplate(ContainerAttributes):
     name = models.CharField(max_length=100, blank=True)
-    created_date = models.DateTimeField(default=timezone.now) #make so can't inherit
+    created_date = models.DateTimeField(default=timezone.now)
     
     def __str__(self):
         return self.name
@@ -123,7 +120,6 @@ class Item(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     #option for quick-add as list? utilize django-taggit for this?
     has_container = models.BooleanField(default=True) #rename?
-    # container = models.ForeignKey(Container, on_delete=models.CASCADE, blank=True, null=True)
     content_type = models.ForeignKey(
         ContentType,
         on_delete=models.CASCADE,

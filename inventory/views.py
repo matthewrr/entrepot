@@ -3,4 +3,4 @@ from django.shortcuts import render
 
 def find_item(request):
     context = {}
-    return render(request, 'inventory/base.html', context)
+    return render(request, 'inventory/content.html', context)

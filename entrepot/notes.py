@@ -4,3 +4,4 @@
 # best way to make created date uneditable?
 # connecting items to any parent
 #inherit generic view class template. pass args?
+#attributes or...
