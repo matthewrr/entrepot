@@ -108,7 +108,7 @@ class Container(ContainerAttributes):
     def saved_locations():
         pass
 
-class Item(models.Model):
+class Article(models.Model):
     name = models.CharField(max_length=100)
     quanity = models.IntegerField(default=0, blank=True, null=True)
     description = models.TextField(blank=True) #set length (of all text fields)
@@ -145,7 +145,7 @@ class QRCode(models.Model):
         on_delete=models.CASCADE,
         limit_choices_to = 
             models.Q(app_label='inventory', model='container') |
-            models.Q(app_label='inventory', model='item'),
+            models.Q(app_label='inventory', model='article'),
         blank=True,
         null=True,
     )
@@ -159,9 +159,9 @@ class HighValue(models.Model):
     purchase_date = models.DateField(blank=True, null=True)
     img = models.ImageField(upload_to = "images/", blank=True, null=True) #upc/serial images? 2 img fields?
     created_date = models.DateTimeField(default=timezone.now)
-    item = models.OneToOneField(
-        Item,
-        on_delete=models.CASCADE, #only allow deletion when item.high_value marked false
+    article = models.OneToOneField(
+        Article,
+        on_delete=models.CASCADE, #only allow deletion when article.high_value marked false
         primary_key=True,
     )
 
