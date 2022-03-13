@@ -5,3 +5,6 @@
 # connecting items to any parent
 #inherit generic view class template. pass args?
 #attributes or...
+
+#view inventory, update inventory, add inventory, delete inventory
+#same with containers etc.

@@ -4,8 +4,9 @@
     <div class="container">
         <div class="card px-3 mt-3 shadow-lg">
             <div class="card-body">
-                <!-- <h1>Title</h1>
-                <h5>Subtitle</h5> -->
+                {% for model, objs in models.items %}
+                    {% include 'inventory/dropdown.html' with model=model objs=objs %}
+                {% endfor %}
             </div>
         </div>
     </div>
