@@ -110,7 +110,7 @@ class Container(ContainerAttributes):
 
 class Article(models.Model):
     name = models.CharField(max_length=100)
-    quanity = models.IntegerField(default=0, blank=True, null=True)
+    quantity = models.PositiveIntegerField(default=1, blank=True, null=True)
     description = models.TextField(blank=True) #set length (of all text fields)
     img = models.ImageField(upload_to = "images/", blank=True, null=True) #write as plural?
     high_value = models.BooleanField(default=False)
