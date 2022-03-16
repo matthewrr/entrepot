@@ -136,6 +136,9 @@ class Article(models.Model):
 
     def __str__(self):
         return self.name
+    
+    # def item_parent(self):
+
 
 class QRCode(models.Model):
     img = models.ImageField(upload_to = "images/", blank=True, null=True)

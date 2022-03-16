@@ -1,46 +1,41 @@
 from django.http import JsonResponse
-from django.shortcuts import render
-import qrcode
+from django.urls import reverse_lazy
+from django.views.generic import (
+    CreateView, 
+    ListView, 
+    UpdateView, 
+    DetailView, 
+    DeleteView
+)
 
 from .models import *
-from .forms import ArticleForm
 
-#move to class-based views
-def view_items(request):
-    buildings = Building.objects.all()
-    rooms = Room.objects.all()
-    fixtures = Fixture.objects.all()
-    containers = Container.objects.all()
-    articles = Article.objects.all()
-    context = { 
-        'models': {
-            'Buildings': buildings,
-            'Rooms': rooms,
-            'Fixtures': fixtures,
-            'Containers': containers,
-            'Articles': articles
-    }}
-    data = buildings
-    qr_code = create_qr(data)
+class ItemListView(ListView):
+    model = Article
+    template_name = "inventory/item_list.html"
+    context_object_name = "items"
 
-    return render(request, 'inventory/content.html', context)
+class ItemDetailView(DetailView):
+    model = Article
+    template_name = "inventory/item_detail.html"
+    context_object_name = "item"
 
-def add_item(request):
-    form = ArticleForm()
-    containers = Container.objects.all()
-    rooms = Room.objects.all()
-    fixtures = Fixture.objects.all()
-    buildings = Building.objects.all()
-    context = {
-        'form': form,
-        'categories': {
-            'container': containers,
-            'fixture': fixtures,
-            'room': rooms,
-            'building': buildings
-        }
-    }
-    return render(request, 'inventory/item_add.html', context)
+class ItemUpdateView(UpdateView):
+    model = Article
+    fields = ('name','quantity','description',)
+    template_name = "inventory/item_update.html"
+
+class ItemDeleteView(DeleteView):
+    model = Article
+    template_name = "inventory/item_delete.html"
+    success_url = reverse_lazy('item_list')
+
+class ItemCreateView(CreateView):
+    model = Article
+    extra_context= {'container_type': ['container','fixture','room','building']}
+    fields = ('name','quantity','description', 'img', 'tags', 'category', 'subcategory', 'content_type', 'high_value',)
+    template_name = "inventory/item_create.html"
+    success_url = reverse_lazy('item_list')
     
 def item_categories(request):
     d = {}
@@ -54,19 +49,11 @@ def item_categories(request):
     for i in range(len(objs)):
         d[i] = objs[i]
     #caching for reselection?
-    #logic + frontend if category does not exist
     return JsonResponse(d)
 
-def create_qr(data):
-    img = qrcode.make(data)
-    file_name = 'MyQRCode2.png'
-    img.save(file_name)
-    return
-
-# CRUD
-# +add item item_add ***VIEW**
-# +read items/FILTER item_view_all ***VIEW**
-# +read detail item_view_detail ***VIEW**
-# +update item (?? --> under detail view) 
-# +delete item (?? --> undre detail view)
-#(search) (?? --> limit to search bar... mayybe view as well?... probably because filter w/o keyword) ***VIEW**
+# import qrcode
+# def create_qr(data):
+#     img = qrcode.make(data)
+#     file_name = 'MyQRCode2.png'
+#     img.save(file_name)
+#     return
