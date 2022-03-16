@@ -1,13 +1,11 @@
 {% extends 'inventory/base.html' %}
 
 {% block content %}
-    <div class="container">
-        <div class="card px-3 mt-3 shadow-lg">
-            <div class="card-body">
-                {% for model, objs in models.items %}
-                    {% include 'inventory/dropdown.html' with model=model objs=objs %}
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+    <a href="{% url 'item_add' %}" class="top-menu">
+        {# {% include './icons/file-earmark-plus.svg' %} #}
+        ADD ITEM
+    </a>
+    {% for model, objs in models.items %}
+        {% include 'inventory/dropdown.html' with model=model objs=objs %}
+    {% endfor %}
 {% endblock %}
