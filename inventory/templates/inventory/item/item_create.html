@@ -1,0 +1,114 @@
+{% extends 'inventory/base.html' %}
+
+{% block content %}
+<div class="card-header">
+    <span class="h4 align-middle fw-light me-2">CREATE ITEM</span>
+    <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#addItem" role="button" aria-expanded="false" aria-controls="addItem">Add Item</a>
+    <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#addItemQuick" role="button" aria-expanded="false" aria-controls="addItemQuick">Quick Add</a>
+</div>
+
+<div class="card-body">
+    <div class="collapse" id="addItem">
+        <form method="POST" class="post-form col-6">
+        {% csrf_token %}
+        {# {{ form.as_p }} #}
+
+            <div class="row mb-3 align-items-center">
+                <div class="col-auto">
+                    <label for="itemName" class="col-form-label">Name:</label>
+                </div>
+                <div class="col">
+                    <input class="form-control" type="text" name="name" maxlength="100" required="" id="id_name">
+                </div>
+                <div class="col-auto">
+                    <label class="col-form-label" for="typeNumber">Quantity:</label>
+                </div>
+                <div class="col-2">
+                    <input class="form-control" type="number" name="quantity" value="1" min="0" id="id_quantity" />
+                </div>
+            </div>
+    
+            <div class="row mb-3 align-items-center">
+                <label for="itemName" class="col-auto col-form-label">Description:</label>
+                <div class="col">
+                    <textarea class="form-control" name="description" id="id_description" rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <div class="col-auto">
+                    <label for="itemName" class="col-form-label">Tags:</label>
+                </div>
+                <div class="col">
+                    <input class="form-control" type="text" name="tags" id="id_tags" aria-describedby="passwordHelpInline">
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <label for="itemName" class="col-auto col-form-label">Upload Image(s):</label>
+                <div class="col">
+                    <input class="form-control" type="file" name="img" accept="image/*" id="id_img" multiple />
+                    <!-- different attribute for multiple in models.py? -->
+                </div>
+            </div>
+
+            {# {{ form.category }} #}
+            <div class="row mb-3 align-items-center">
+                <label for="itemName" class="col-sm-3 col-form-label">Category:</label>
+                <div class="col-sm-5">
+                    <select class="form-select" id="" aria-label="Default select example">
+                        <option selected>Placeholder</option>
+                    </select>
+                </div>
+            </div>
+            
+            {# {{ form.subcategory }} #}
+            <div class="row mb-3 align-items-center">
+                <label for="itemName" class="col-sm-3 col-form-label">Subcategory:</label>
+                <div class="col-sm-5">
+                    <select class="form-select" id="" aria-label="Default select example">
+                        <option selected>Placeholder</option>
+                    </select>
+                </div>
+            </div>
+
+            {# {{ form.container_type }} #}
+            <div class="row mb-3 align-items-center">
+                <label for="itemName" class="col-sm-4 col-form-label">Container Type:</label>
+                <div class="col-sm-4">
+                    <select class="form-select" id="category" aria-label="Default select example">
+                        <option selected>Choose...</option>
+                        {% for container in container_type %}
+                        <option value="{{ container }}">{{ container|title }}s</option>
+                        {% endfor %}
+                </select>
+                </div>
+            </div>
+
+            {# {{ container }} #}
+            <div class="row mb-3 align-items-center">
+                <label for="itemName" class="col-sm-4 col-form-label">Container:</label>
+                <div class="col-sm-7">
+                    <select class="form-select" id="subcategory" aria-label="Default select example" disabled>
+                        <option selected>Select a Container Type First</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-check mb-3">
+            <label class="form-check-label" for="flexCheckDefault">High Value</label>
+            <input class="form-check-input" type="checkbox" name="high_value" value="" id="id_high_value">    
+            </div>
+
+            <div class="mb3">
+            <button type="submit" class="save btn btn-secondary">Save</button>
+            <button type="submit" class="save btn btn-secondary">Save & Add Another Item</button>
+            </div>
+            
+        </form>
+    </div>
+</div>
+
+<div class="collapse" id="addItemQuick">Quick Add</div>
+
+{% endblock %}
